@@ -1,0 +1,10 @@
+rp.egg-info
+dist
+build
+__pycache__
+.mypy_cache
+*.pyc
+.cache
+.eggs
+pytest_runner-*
+*.py-e
