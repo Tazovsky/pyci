@@ -1,6 +1,9 @@
 import filecmp
 from tempfile import mkstemp
+
+
 from pyci import make_custom_yaml
+
 
 
 def test_output_yml():

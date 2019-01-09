@@ -3,7 +3,6 @@ from shutil import move
 from os import fdopen, remove, path
 import re
 
-
 def make_custom_yaml(file_path: str, pattern: str, subst: str, output_path: str) -> None:
 
     #Create temp file
