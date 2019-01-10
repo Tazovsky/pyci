@@ -18,3 +18,5 @@ def get_jar(url: str = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar
 
     with request.urlopen(url, context = context) as response, open(target_file, 'wb') as target_file:
         shutil.copyfileobj(response, target_file)
+
+    return target_file
