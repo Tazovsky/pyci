@@ -6,9 +6,6 @@ import os
 
 def test_make_custom_yaml(shared_datadir):
 
-    print(">>>>>> wd:" + str(os.path.dirname(os.path.realpath(__file__))))
-    print("os.getcwd(): " + os.getcwd())
-
     h1, yml1 = mkstemp()
     ref_yml1 = shared_datadir / "testdata/application.yml"
 
