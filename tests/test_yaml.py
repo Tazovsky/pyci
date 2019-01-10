@@ -40,6 +40,10 @@ def test_insert_json_in_yaml(shared_datadir):
     # users validation
     assert [k for k in res.keys()] == ['master', 'user@somemail.com']
 
+    # check if alle needed fields are under users
+    assert [k for k in res['master'].keys()] == ['json', 'yaml']
+    assert [k for k in res['user@somemail.com'].keys()] == ['json', 'yaml']
+
     # field values validation
     assert res["user@somemail.com"]["json"][0]["port-range-max"] == 20200
 
