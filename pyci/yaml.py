@@ -31,6 +31,22 @@ def make_custom_yaml(file_path: str, pattern: str, subst: str, output_path: str)
     #Move new file
     move(tmp_path, output_path)
 
+output_path = 'tests/data/output.yml'
+yaml_path = 'tests/data/testdata/application.yml'
+json_path = 'tests/data/testdata/config.json'
+
+
+def move_file(source: str, target: str) -> bool:
+
+    if path.isfile(source) == False:
+        raise Exception('File "{0}" does not exist'.format(source))
+
+    if path.isfile(target):
+        remove(target)
+
+    move(source, target)
+    return True
+
 
 
 def insert_json_in_yaml(json_path: str, yaml_path: str, output_path: str) -> dict:
@@ -51,6 +67,8 @@ def insert_json_in_yaml(json_path: str, yaml_path: str, output_path: str) -> dic
         print("Processing user: " + user)
 
         fh, tmp_path = mkstemp()
+
+        move(yaml_path, tmp_path)
 
         field_x_value = user_per_config[user][0]
         for nm in field_x_value:
