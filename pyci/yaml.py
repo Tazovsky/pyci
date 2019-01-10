@@ -71,7 +71,4 @@ def insert_json_in_yaml(json_path: str, yaml_path: str) -> dict:
         with open(new_yaml, "r") as f:
             user_per_config[user]["yaml"] = f.read()
 
-    return user_per_config
-
-
-
+    return dict(user_per_config)

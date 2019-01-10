@@ -11,7 +11,7 @@ from pyci.yaml import insert_json_in_yaml
 # TODO: change warnings to INFO logger message
 
 def get_jar(url: str = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar",
-            target_file: str = "./{0}".format(url.split("/")[-1])) -> str:
+            target_file: str = "shinyproxy.jar") -> str:
 
     dir_name = os.path.dirname(target_file)
 
@@ -32,6 +32,10 @@ test_dir = "tests/data/testdata"
 json_path = os.path.join(test_dir, "config.json")
 yaml_path = os.path.join(test_dir, "application.yml")
 deployment_dir = "deployment"
+deploy_cmd = None
+url = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar"
+jar_name = "shinyproxy.jar"
+
 
 def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None,
            url: str = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar",
@@ -54,18 +58,23 @@ def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None
 
     res = insert_json_in_yaml(json_path, yaml_path)
 
+    print("keys from res: {0}".format(res["user@somemail.com"].keys()))
+
     # TODO: validate HERE if there are overlapping shinyproxy ports between users
 
     for user in res:
-        print(user)
+        print("Deploying user: " + user)
         user_dir = re.sub("[^a-zA-Z0-9]", "_", user)
 
         full_deployment_path = os.path.join(deployment_dir, user_dir)
 
-        if os.path.isdir(deployment_dir) is False:
-            os.makedirs(deployment_dir)
+        if os.path.isdir(full_deployment_path) is False:
+            os.makedirs(full_deployment_path)
+
+        print("Keys: {0}".format(res[user].keys()))
 
         yaml_content = res[user]["yaml"]
+
         deployed_yaml_path = os.path.join(full_deployment_path, "application.yml")
         print("Creating '{0}'".format(deployed_yaml_path))
         with open(deployed_yaml_path, "w") as f:
@@ -73,8 +82,14 @@ def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None
 
         # download shinyproxy jar file
         jar_path = os.path.join(full_deployment_path, jar_name)
-        get_jar(url = url, target_file = jar_path)
+        get_jar(url=url, target_file=jar_path)
 
         # execute deployment command, e.g. systemctl service service_name start
         if deploy_cmd is not None:
             os.system(deploy_cmd)
+
+
+deploy(json_path=json_path, yaml_path=yaml_path, deployment_dir=deployment_dir,
+       deploy_cmd=None,
+       url="https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar",
+       jar_name="shinyproxy.jar")
