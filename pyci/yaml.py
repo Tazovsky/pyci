@@ -1,5 +1,5 @@
 from tempfile import mkstemp
-from shutil import move
+from shutil import move, copy
 from os import fdopen, remove, path
 import re
 import json
@@ -36,19 +36,6 @@ yaml_path = 'tests/data/testdata/application.yml'
 json_path = 'tests/data/testdata/config.json'
 
 
-def move_file(source: str, target: str) -> bool:
-
-    if path.isfile(source) == False:
-        raise Exception('File "{0}" does not exist'.format(source))
-
-    if path.isfile(target):
-        remove(target)
-
-    move(source, target)
-    return True
-
-
-
 def insert_json_in_yaml(json_path: str, yaml_path: str, output_path: str) -> dict:
 
     ### assert here ###
@@ -59,7 +46,8 @@ def insert_json_in_yaml(json_path: str, yaml_path: str, output_path: str) -> dic
     for i in range(0, len(json_dict["ci"])):
         user = json_dict["ci"][i]["user"]
         val = json_dict["ci"][i]["shinyproxy"]
-        user_per_config[user] = val
+        user_per_config[user] = dict()
+        user_per_config[user]["json"] = val
 
 
     for user in user_per_config:
@@ -69,18 +57,20 @@ def insert_json_in_yaml(json_path: str, yaml_path: str, output_path: str) -> dic
         fh, new_yaml = mkstemp()
 
         # all updates in yaml will be written to new_yaml which is copy of origin yaml
-        move(yaml_path, new_yaml)
+        copy(yaml_path, new_yaml)
 
-        field_x_value = user_per_config[user][0]
+        field_x_value = user_per_config[user]["json"][0]
         for nm in field_x_value:
             print(str(nm) + ": " + str(field_x_value[nm]))
             # insert value into yaml
             # TODO: vectorize make_custom_yaml
             make_custom_yaml(new_yaml, str(nm), str(field_x_value[nm]), new_yaml)
 
-        # Remove original file
-        if path.isfile(output_path):
-            remove(output_path)
+        # read new yaml into dict element
+        with open(new_yaml, "r") as f:
+            user_per_config[user]["yaml"] = f.read()
 
-        # Move new file
-        move(new_yaml, output_path)
+        return user_per_config
+
+
+
