@@ -3,7 +3,6 @@ from tempfile import mkstemp
 from pyci.yaml import make_custom_yaml, insert_json_in_yaml
 import json
 from os.path import join as path
-import os
 
 test_dir = "tests/data/testdata"
 ref_dir = "tests/data/refdata"
