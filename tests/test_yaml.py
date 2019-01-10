@@ -8,9 +8,6 @@ import os
 test_dir = "tests/data/testdata"
 ref_dir = "tests/data/refdata"
 
-
-
-
 def test_make_custom_yaml(shared_datadir):
 
     h1, yml1 = mkstemp()
@@ -31,11 +28,6 @@ def test_make_custom_yaml(shared_datadir):
 if False:
     make_custom_yaml(path(test_dir, "application.yml"), "container-cmd", '["R", "-e print(1)"]', path(ref_dir, "application1.yml"))
     make_custom_yaml(path(ref_dir, "application1.yml"), "port", "8888", path(ref_dir, "application2.yml"))
-
-
-
-yaml_path = "tests/data/testdata/application.yml"
-json_path = "tests/data/testdata/config.json"
 
 
 def test_insert_json_in_yaml(shared_datadir):
