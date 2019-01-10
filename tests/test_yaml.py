@@ -1,8 +1,15 @@
 import filecmp
 from tempfile import mkstemp
 from pyci.yaml import make_custom_yaml, insert_json_in_yaml
+import json
 from os.path import join as path
 import os
+
+test_dir = "tests/data/testdata"
+ref_dir = "tests/data/refdata"
+
+
+
 
 def test_make_custom_yaml(shared_datadir):
 
@@ -22,11 +29,34 @@ def test_make_custom_yaml(shared_datadir):
 
 # to recreate ref objects
 if False:
-    make_custom_yaml("tests/data/testdata/application.yml", "container-cmd", '["R", "-e print(1)"]', "tests/data/refdata/application1.yml")
-    make_custom_yaml("tests/data/refdata/application1.yml", "port", "8888", "tests/data/refdata/application2.yml")
+    make_custom_yaml(path(test_dir, "application.yml"), "container-cmd", '["R", "-e print(1)"]', path(ref_dir, "application1.yml"))
+    make_custom_yaml(path(ref_dir, "application1.yml"), "port", "8888", path(ref_dir, "application2.yml"))
+
+
+
+yaml_path = "tests/data/testdata/application.yml"
+json_path = "tests/data/testdata/config.json"
 
 
 def test_insert_json_in_yaml(shared_datadir):
 
-    json = shared_datadir / "testdata/config.json"
-    yml = shared_datadir / "testdata/application.yml"
+    json_path = shared_datadir / "testdata/config.json"
+    yaml_path = shared_datadir / "testdata/application.yml"
+
+    res = insert_json_in_yaml(json_path, yaml_path)
+
+    # users validation
+    assert [k for k in res.keys()] == ['master', 'user@somemail.com']
+
+    # field values validation
+    assert res["user@somemail.com"]["json"][0]["port-range-max"] == 20200
+
+    # load reference config
+    with(open(path(ref_dir, "config.json"), "r")) as f:
+        ref_res = json.loads(f.read())
+
+    assert res == ref_res
+
+if False:
+    with(open(path(ref_dir, "config.json"), "w")) as f:
+        json.dump(res, f)
