@@ -8,6 +8,17 @@ import re
 # import package module(s)
 from pyci.yaml import insert_json_in_yaml
 
+# helpers
+if False:
+    test_dir = "tests/data/testdata"
+    json_path = os.path.join(test_dir, "config.json")
+    yaml_path = os.path.join(test_dir, "application.yml")
+    deployment_dir = "deployment"
+    deploy_cmd = None
+    url = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar"
+    jar_name = "shinyproxy.jar"
+
+
 # TODO: change warnings to INFO logger message
 
 def get_jar(url: str = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar",
@@ -26,16 +37,6 @@ def get_jar(url: str = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar
         shutil.copyfileobj(response, target_file)
 
     return target_file
-
-
-test_dir = "tests/data/testdata"
-json_path = os.path.join(test_dir, "config.json")
-yaml_path = os.path.join(test_dir, "application.yml")
-deployment_dir = "deployment"
-deploy_cmd = None
-url = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar"
-jar_name = "shinyproxy.jar"
-
 
 def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None,
            url: str = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar",
