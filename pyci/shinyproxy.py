@@ -88,8 +88,7 @@ def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None
         if deploy_cmd is not None:
             os.system(deploy_cmd)
 
+        # return dict containing detailed info
+        res[user].update(dict(full_deployment_path=full_deployment_path))
 
-deploy(json_path=json_path, yaml_path=yaml_path, deployment_dir=deployment_dir,
-       deploy_cmd=None,
-       url="https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar",
-       jar_name="shinyproxy.jar")
+    return dict(res)
