@@ -2,6 +2,7 @@ from tempfile import mkstemp
 from shutil import move
 from os import fdopen, remove, path
 import re
+import json
 
 def make_custom_yaml(file_path: str, pattern: str, subst: str, output_path: str) -> None:
 
@@ -29,3 +30,37 @@ def make_custom_yaml(file_path: str, pattern: str, subst: str, output_path: str)
 
     #Move new file
     move(tmp_path, output_path)
+
+
+def insert_json_in_yaml(json_path: str, yaml_path: str, output_path: str) -> dict:
+
+    ### assert here ###
+
+    json_dict = json.load(open(json_path, "r"))
+    user_per_config = dict()
+
+    for i in range(0, len(json_dict["ci"])):
+        user = json_dict["ci"][i]["user"]
+        val = json_dict["ci"][i]["shinyproxy"]
+        user_per_config[user] = val
+
+
+    for user in user_per_config:
+        # iterate over fields to update in yaml
+        print("Processing user: " + user)
+
+        fh, tmp_path = mkstemp()
+
+        field_x_value = user_per_config[user][0]
+        for nm in field_x_value:
+            print(str(nm) + ": " + str(field_x_value[nm]))
+            # insert value into yaml
+            # TODO: vectorize make_custom_yaml
+            make_custom_yaml(yaml_path, str(nm), str(field_x_value[nm]), tmp_path)
+
+        # Remove original file
+        if path.isfile(output_path):
+            remove(output_path)
+
+        # Move new file
+        move(tmp_path, output_path)
