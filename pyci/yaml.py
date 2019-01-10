@@ -32,6 +32,7 @@ def make_custom_yaml(file_path: str, pattern: str, subst: str, output_path: str)
     move(tmp_path, output_path)
 
 
+
 def insert_json_in_yaml(json_path: str, yaml_path: str, output_path: str) -> dict:
 
     ### assert here ###
