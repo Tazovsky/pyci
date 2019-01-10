@@ -66,20 +66,21 @@ def insert_json_in_yaml(json_path: str, yaml_path: str, output_path: str) -> dic
         # iterate over fields to update in yaml
         print("Processing user: " + user)
 
-        fh, tmp_path = mkstemp()
+        fh, new_yaml = mkstemp()
 
-        move(yaml_path, tmp_path)
+        # all updates in yaml will be written to new_yaml which is copy of origin yaml
+        move(yaml_path, new_yaml)
 
         field_x_value = user_per_config[user][0]
         for nm in field_x_value:
             print(str(nm) + ": " + str(field_x_value[nm]))
             # insert value into yaml
             # TODO: vectorize make_custom_yaml
-            make_custom_yaml(yaml_path, str(nm), str(field_x_value[nm]), tmp_path)
+            make_custom_yaml(new_yaml, str(nm), str(field_x_value[nm]), new_yaml)
 
         # Remove original file
         if path.isfile(output_path):
             remove(output_path)
 
         # Move new file
-        move(tmp_path, output_path)
+        move(new_yaml, output_path)
