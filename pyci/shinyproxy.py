@@ -33,9 +33,9 @@ json_path = os.path.join(test_dir, "config.json")
 yaml_path = os.path.join(test_dir, "application.yml")
 deployment_dir = "deployment"
 
-def deploy(json_path: str, yaml_path: str, deployment_dir: str,
+def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None,
            url: str = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar",
-           jar_name: str = "shinyproxy.jar", deploy_cmd: None) -> None:
+           jar_name: str = "shinyproxy.jar") -> None:
 
     ### assert ###
     if os.path.isfile(json_path) is False:
