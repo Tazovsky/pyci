@@ -36,7 +36,7 @@ yaml_path = 'tests/data/testdata/application.yml'
 json_path = 'tests/data/testdata/config.json'
 
 
-def insert_json_in_yaml(json_path: str, yaml_path: str, output_path: str) -> dict:
+def insert_json_in_yaml(json_path: str, yaml_path: str) -> dict:
 
     ### assert here ###
 
@@ -63,7 +63,6 @@ def insert_json_in_yaml(json_path: str, yaml_path: str, output_path: str) -> dic
         for nm in field_x_value:
             print(str(nm) + ": " + str(field_x_value[nm]))
             # insert value into yaml
-            # TODO: vectorize make_custom_yaml
             make_custom_yaml(new_yaml, str(nm), str(field_x_value[nm]), new_yaml)
 
         # read new yaml into dict element
