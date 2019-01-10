@@ -15,14 +15,14 @@ def test_make_custom_yaml(shared_datadir):
 
     make_custom_yaml(ref_yml1, "container-cmd", '["R", "-e print(1)"]', yml1)
 
-    assert filecmp.cmp(shared_datadir / "refdata/application1.yml", yml1) == True
+    assert filecmp.cmp(shared_datadir / "refdata/application1.yml", yml1) is True
 
     h2, yml2 = mkstemp()
     ref_yml2 = shared_datadir / "refdata/application1.yml"
 
     make_custom_yaml(ref_yml2, "port", "8888", yml2)
 
-    assert filecmp.cmp(shared_datadir / "refdata/application2.yml", yml2) == True
+    assert filecmp.cmp(shared_datadir / "refdata/application2.yml", yml2) is True
 
 # to recreate ref objects
 if False:

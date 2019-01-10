@@ -9,7 +9,7 @@ def get_jar(url: str = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar
 
     dir_name = os.path.dirname(target_file)
 
-    if dir_name not in ["", ".", "~"] and os.path.isdir(dir_name) == False:
+    if dir_name not in ["", ".", "~"] and os.path.isdir(dir_name) is False:
         os.makedirs(dir_name)
         warnings.warn("Created directory: " + dir_name)
 
