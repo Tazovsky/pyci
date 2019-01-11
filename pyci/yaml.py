@@ -4,6 +4,8 @@ from os import fdopen, remove, path
 import re
 import json
 
+# TODO: change print to INFO logger message
+
 def make_custom_yaml(file_path: str, pattern: str, subst: str, output_path: str) -> None:
 
     #Create temp file
@@ -31,14 +33,14 @@ def make_custom_yaml(file_path: str, pattern: str, subst: str, output_path: str)
     #Move new file
     move(tmp_path, output_path)
 
-output_path = 'tests/data/output.yml'
-yaml_path = 'tests/data/testdata/application.yml'
-json_path = 'tests/data/testdata/config.json'
+# output_path = 'tests/data/output.yml'
+# yaml_path = 'tests/data/testdata/application.yml'
+# json_path = 'tests/data/testdata/config.json'
 
 
 def insert_json_in_yaml(json_path: str, yaml_path: str) -> dict:
 
-    ### assert here ###
+    ### TODO: assert here ###
 
     json_dict = json.load(open(json_path, "r"))
     user_per_config = dict()
@@ -69,7 +71,4 @@ def insert_json_in_yaml(json_path: str, yaml_path: str) -> dict:
         with open(new_yaml, "r") as f:
             user_per_config[user]["yaml"] = f.read()
 
-        return user_per_config
-
-
-
+    return dict(user_per_config)
