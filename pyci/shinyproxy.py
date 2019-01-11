@@ -4,6 +4,8 @@ import ssl
 import os
 import warnings
 import re
+import subprocess
+from subprocess import Popen, PIPE
 
 # import package module(s)
 from pyci.yaml import insert_json_in_yaml
@@ -37,6 +39,23 @@ def get_jar(url: str = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar
         shutil.copyfileobj(response, target_file)
 
     return target_file
+
+
+def run_bash(what: str = None):
+    if what is None:
+        return None
+    elif os.path.isfile(what):
+        shell = False
+    else:
+        shell = True
+
+    session = subprocess.Popen([what], shell=shell, stdout=PIPE, stderr=PIPE)
+    stdout, stderr = session.communicate()
+
+    if stderr:
+        raise Exception("Error " + str(stderr))
+
+    return stdout
 
 def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None,
            url: str = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar",
