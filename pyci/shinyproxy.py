@@ -59,8 +59,6 @@ def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None
 
     res = insert_json_in_yaml(json_path, yaml_path)
 
-    print("keys from res: {0}".format(res["user@somemail.com"].keys()))
-
     # TODO: validate HERE if there are overlapping shinyproxy ports between users
 
     for user in res:
