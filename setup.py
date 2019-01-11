@@ -6,6 +6,7 @@ setup(
     author='Tazovsky',
     license='MIT',
     packages=['pyci'],
+    package_data={'pyci': ['data/scripts/*.sh']},
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
     zip_safe=False,
