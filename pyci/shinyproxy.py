@@ -107,7 +107,12 @@ def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None
 
         # execute deployment command, e.g. systemctl service service_name start
         if deploy_cmd is not None:
+            origin_wd=os.getcwd()
+            # set WD to deployment path
+            os.chdir(full_deployment_path)
             run_bash(what=deploy_cmd)
+            # back to origin working dir
+            os.chdir(origin_wd)
 
         # return dict containing detailed info
         res[user].update(dict(full_deployment_path=full_deployment_path))
