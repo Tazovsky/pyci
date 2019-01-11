@@ -59,9 +59,14 @@ def run_bash(what: str = None):
 
     return dict(stdout=stdout, process=session)
 
-def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None,
+def deploy(json_path: str,
+           yaml_path: str,
+           deployment_dir: str,
+           deploy_cmd: str = None,
            url: str = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar",
-           jar_name: str = "shinyproxy.jar") -> None:
+           jar_name: str = "shinyproxy.jar",
+           pid_file: str = "process.pid",
+           kill_process: bool = True) -> dict:
 
     ### assert ###
     if os.path.isfile(json_path) is False:
@@ -110,8 +115,15 @@ def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None
             origin_wd=os.getcwd()
             # set WD to deployment path
             os.chdir(full_deployment_path)
+            # kill process if pid exists and still running
+            if kill_process and os.path.isfile(pid_file):
+                pid = open(pid_file, "r").read()
+                subprocess.call(["kill {0}".format(pid)], shell=True)
             print("Running cmd: {0}".format(deploy_cmd))
             deploy_cmd_output = run_bash(what=deploy_cmd)
+            # write pid file
+            with open(pid_file, "w") as f:
+                f.write(deploy_cmd_output["process"].pid)
             # back to origin working dir
             os.chdir(origin_wd)
 
