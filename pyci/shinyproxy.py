@@ -123,7 +123,7 @@ def deploy(json_path: str,
             deploy_cmd_output = run_bash(what=deploy_cmd)
             # write pid file
             with open(pid_file, "w") as f:
-                f.write(str(deploy_cmd_output["process"].pid))
+                f.write(str(deploy_cmd_output.pid))
             # back to origin working dir
             os.chdir(origin_wd)
             res[user].update(dict(process=deploy_cmd_output))
