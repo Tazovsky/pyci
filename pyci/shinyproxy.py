@@ -4,6 +4,8 @@ import ssl
 import os
 import warnings
 import re
+import subprocess
+from subprocess import Popen, PIPE
 
 # import package module(s)
 from pyci.yaml import insert_json_in_yaml
@@ -38,6 +40,24 @@ def get_jar(url: str = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar
 
     return target_file
 
+
+def run_bash(what: str = None):
+
+    if what is None:
+        return None
+    elif os.path.isfile(what):
+        shell = False
+    else:
+        shell = True
+
+    session = subprocess.Popen([what], shell=shell, stdout=PIPE, stderr=PIPE)
+    stdout, stderr = session.communicate()
+
+    if stderr:
+        raise Exception("Error " + str(stderr))
+
+    return stdout
+
 def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None,
            url: str = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar",
            jar_name: str = "shinyproxy.jar") -> None:
@@ -53,9 +73,6 @@ def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None
     if os.path.isdir(deployment_dir) is False:
         os.makedirs(deployment_dir)
         warnings.warn("Created directory: " + deployment_dir)
-
-    if deploy_cmd is not None and deploy_cmd is not str:
-        raise Exception("'deploy_cmd' argument is not a string")
 
     res = insert_json_in_yaml(json_path, yaml_path)
 
@@ -85,7 +102,7 @@ def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None
 
         # execute deployment command, e.g. systemctl service service_name start
         if deploy_cmd is not None:
-            os.system(deploy_cmd)
+            run_bash(what=deploy_cmd)
 
         # return dict containing detailed info
         res[user].update(dict(full_deployment_path=full_deployment_path))
