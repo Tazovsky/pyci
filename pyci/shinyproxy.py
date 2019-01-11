@@ -42,6 +42,7 @@ def get_jar(url: str = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar
 
 
 def run_bash(what: str = None):
+
     if what is None:
         return None
     elif os.path.isfile(what):
@@ -73,9 +74,6 @@ def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None
         os.makedirs(deployment_dir)
         warnings.warn("Created directory: " + deployment_dir)
 
-    if deploy_cmd is not None and deploy_cmd is not str:
-        raise Exception("'deploy_cmd' argument is not a string")
-
     res = insert_json_in_yaml(json_path, yaml_path)
 
     # TODO: validate HERE if there are overlapping shinyproxy ports between users
@@ -104,7 +102,7 @@ def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None
 
         # execute deployment command, e.g. systemctl service service_name start
         if deploy_cmd is not None:
-            os.system(deploy_cmd)
+            run_bash(what=deploy_cmd)
 
         # return dict containing detailed info
         res[user].update(dict(full_deployment_path=full_deployment_path))
