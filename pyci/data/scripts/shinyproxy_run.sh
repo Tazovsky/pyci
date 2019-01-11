@@ -6,9 +6,6 @@ PID_FILE=$2
 [ -z "$PATH_TO_JAR" ] && echo "PATH_TO_JAR is not provided" && exit 1
 [ -z "$PID_FILE" ] && echo "PID_FILE is not provided" && exit 1
 
-echo ">>>>> run"
-exit 0
-
 if [ -f $PID_FILE ]; then
     PID=$(cat $PID_FILE)
     echo "Killing Process ID: $PID..."
@@ -17,4 +14,7 @@ if [ -f $PID_FILE ]; then
 fi
 
 nohup java -jar $PATH_TO_JAR
-echo $! > $PID_FILE
+PID=$!
+echo $PID > $PID_FILE
+
+echo "Started ShinyProxy process ID $PID"
