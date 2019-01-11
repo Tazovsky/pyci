@@ -30,7 +30,8 @@ def test_deploy(shared_datadir):
     assert hashlib.md5(f.encode("utf-8")).hexdigest() == '98753b036e2b06b2e161e0b2ad8db657'
 
 def test_run_bash(shared_datadir):
-    assert run_bash("echo 'test msg'").decode() == 'test msg\n'
+    assert run_bash("echo 'test msg'")["stdout"].decode() == 'test msg\n'
     script_path = str(shared_datadir / "testdata/test_run_bash.sh")
     result = run_bash(what=script_path)
-    assert result.decode() == 'SUCCESS\n'
+    assert result["stdout"].decode() == 'SUCCESS\n'
+    assert [k for k in result] == ['stdout', 'process']

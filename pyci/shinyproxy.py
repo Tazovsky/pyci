@@ -57,7 +57,7 @@ def run_bash(what: str = None):
     if stderr:
         raise Exception("Error " + str(stderr))
 
-    return stdout
+    return dict(stdout=stdout, process=session)
 
 def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None,
            url: str = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar",
@@ -110,11 +110,13 @@ def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None
             origin_wd=os.getcwd()
             # set WD to deployment path
             os.chdir(full_deployment_path)
-            run_bash(what=deploy_cmd)
+            print("Running cmd: {0}".format(deploy_cmd))
+            deploy_cmd_output = run_bash(what=deploy_cmd)
             # back to origin working dir
             os.chdir(origin_wd)
 
         # return dict containing detailed info
         res[user].update(dict(full_deployment_path=full_deployment_path))
+        res[user].update(dict(deploy_cmd_output=deploy_cmd_output))
 
     return dict(res)

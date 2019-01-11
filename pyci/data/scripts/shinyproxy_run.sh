@@ -13,7 +13,7 @@ if [ -f $PID_FILE ]; then
     rm -f $PID_FILE
 fi
 
-nohup java -jar $PATH_TO_JAR
+nohup java -jar $PATH_TO_JAR &
 PID=$!
 echo $PID > $PID_FILE
 
