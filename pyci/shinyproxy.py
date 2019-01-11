@@ -119,6 +119,8 @@ def deploy(json_path: str,
             if kill_process and os.path.isfile(pid_file):
                 pid = open(pid_file, "r").read()
                 subprocess.call(["kill {0}".format(pid)], shell=True)
+                print("Removing PID file")
+                os.remove(pid_file)
             print("Running cmd: {0}".format(deploy_cmd))
             deploy_cmd_output = run_bash(what=deploy_cmd)
             # write pid file
