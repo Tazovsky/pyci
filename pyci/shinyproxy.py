@@ -9,6 +9,7 @@ from subprocess import Popen, PIPE
 
 # import package module(s)
 from pyci.yaml import insert_json_in_yaml
+from pyci.utils import data_path
 
 # helpers
 if False:
@@ -99,6 +100,10 @@ def deploy(json_path: str, yaml_path: str, deployment_dir: str, deploy_cmd: None
         # download shinyproxy jar file
         jar_path = os.path.join(full_deployment_path, jar_name)
         get_jar(url=url, target_file=jar_path)
+
+        # copy bash script from template
+        script_path = os.path.join(data_path, "scripts", "shinyproxy_run.sh")
+        shutil.copy(script_path, full_deployment_path)
 
         # execute deployment command, e.g. systemctl service service_name start
         if deploy_cmd is not None:
