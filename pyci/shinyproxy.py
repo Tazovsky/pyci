@@ -5,7 +5,7 @@ import os
 import warnings
 import re
 import subprocess
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, DEVNULL
 
 # import package module(s)
 from pyci.yaml import insert_json_in_yaml
@@ -46,18 +46,17 @@ def run_bash(what: str = None):
 
     if what is None:
         return None
-    elif os.path.isfile(what):
-        shell = False
-    else:
-        shell = True
+    elif type(what) is not list:
+        raise Exception("'what' argument must be a list")
 
-    session = subprocess.Popen([what], shell=shell, stdout=PIPE, stderr=PIPE)
-    stdout, stderr = session.communicate()
+    session = subprocess.Popen(what, shell=False, stdout=PIPE, stderr=PIPE)
 
-    if stderr:
-        raise Exception("Error " + str(stderr))
+    if session.poll() is not None:
+        stdout, stderr = session.communicate()
+        if stderr:
+            raise Exception("Error " + str(stderr))
 
-    return dict(stdout=stdout, process=session)
+    return session
 
 def deploy(json_path: str,
            yaml_path: str,
@@ -107,7 +106,7 @@ def deploy(json_path: str,
         get_jar(url=url, target_file=jar_path)
 
         # copy bash script from template
-        script_path = os.path.join(data_path, "scripts", "shinyproxy_run.sh")
+        script_path = os.path.join(data_path, "scripts", "deploy.py")
         shutil.copy(script_path, full_deployment_path)
 
         # execute deployment command, e.g. systemctl service service_name start
@@ -115,6 +114,7 @@ def deploy(json_path: str,
             origin_wd=os.getcwd()
             # set WD to deployment path
             os.chdir(full_deployment_path)
+            print("Deploying from location: {0}".format(os.getcwd()))
             # kill process if pid exists and still running
             if kill_process and os.path.isfile(pid_file):
                 pid = open(pid_file, "r").read()
@@ -126,9 +126,9 @@ def deploy(json_path: str,
                 f.write(str(deploy_cmd_output["process"].pid))
             # back to origin working dir
             os.chdir(origin_wd)
+            res[user].update(dict(process=deploy_cmd_output))
 
         # return dict containing detailed info
         res[user].update(dict(full_deployment_path=full_deployment_path))
-        res[user].update(dict(deploy_cmd_output=deploy_cmd_output))
 
     return dict(res)
