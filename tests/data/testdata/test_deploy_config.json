@@ -1,0 +1,24 @@
+{
+   "ci":[
+         {
+            "user": "user1",
+            "shinyproxy":[{
+              "port": 8081,
+              "display-name": "App 1",
+              "port-range-start": 20000,
+              "port-range-max": 20100
+            }]
+
+         },
+         {
+            "user": "user2",
+            "shinyproxy":[{
+              "port": 8082,
+              "display-name": "App 2",
+              "port-range-start": 20101,
+              "port-range-max": 20200
+            }]
+
+         }
+      ]
+}
