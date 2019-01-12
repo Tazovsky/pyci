@@ -17,7 +17,7 @@ def test_deploy_shinyproxy(shared_datadir):
     os.chdir(os.path.join(dir_path, "shinyproxy-config-examples", example_dir))
 
 
-    yaml_path = "./application.yml"
+    yaml_path = "application.yml"
     deployment_dir = os.path.join(dir_path, "deployed")
     url = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar"
     jar_name = "shinyproxy.jar"
@@ -25,19 +25,19 @@ def test_deploy_shinyproxy(shared_datadir):
     if False:
         test_dir = "/Users/foltynsk/Projects/pyci/tests/data/testdata"
         json_path = os.path.join(test_dir, "test_deploy_config.json")
-        json_dict = json.load(open(json_path, "r"))
+        # json_dict = json.load(open(json_path, "r"))
 
     # os.getcwd()
     # '/Users/foltynsk/Projects/pyci'
 
     jar_name = "shinyproxy.jar"
     output = deploy(json_path=json_path,
-                    yaml_path=yaml_path,
-                    deployment_dir=deployment_dir,
-                    deploy_cmd="nohup java -jar {0} &".format(jar_name),
-                    url="https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar",
-                    jar_name=jar_name)
+                yaml_path=yaml_path,
+                deployment_dir=deployment_dir,
+                deploy_cmd="nohup java -jar {0} &".format(jar_name).split(),
+                url="https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar",
+                jar_name=jar_name)
+
+    assert isinstance(output["user1"]["pid"], int)
 
 
-
-    os.listdir(os.path.join(deployment_dir, "user1"))
