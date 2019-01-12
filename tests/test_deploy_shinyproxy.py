@@ -38,7 +38,6 @@ def test_deploy_shinyproxy(shared_datadir):
                 url="https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar",
                 jar_name=jar_name)
 
-    assert isinstance(output["user1"]["process"].pid
-                      , int)
+    assert isinstance(output["user1"]["process"].pid, int)
 
 
