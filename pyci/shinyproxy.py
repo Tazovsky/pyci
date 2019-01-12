@@ -78,7 +78,7 @@ def deploy(json_path: str,
     # check if deployment location exists
     if os.path.isdir(deployment_dir) is False:
         os.makedirs(deployment_dir)
-        warnings.warn("Created directory: " + deployment_dir)
+        print("Created directory: " + deployment_dir)
 
     res = insert_json_in_yaml(json_path, yaml_path)
 
