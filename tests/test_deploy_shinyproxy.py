@@ -1,10 +1,12 @@
 from tempfile import mkdtemp
 import git
 from pyci.shinyproxy import *
+from pyci.utils import *
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import NoSuchElementException
 import atexit
+import time
 
 def test_deploy_shinyproxy(shared_datadir):
     # working dir
@@ -37,14 +39,10 @@ def test_deploy_shinyproxy(shared_datadir):
     assert isinstance(output["user1"]["process"].pid, int)
     assert isinstance(output["user2"]["process"].pid, int)
 
-
     def kill_processes():
-
-
         for nm in [k for k in output.keys()]:
             print("Killing process ID: {0}...".format(output[nm]["process"].pid))
             output[nm]["process"].kill()
-
 
     atexit.register(kill_processes)
 
@@ -56,13 +54,16 @@ def test_deploy_shinyproxy(shared_datadir):
     atexit.register(driver.close)
 
     # check if 1st instance is running
-    driver.get('http://localhost:{0}/login'.format("8081"))
+    driver.get('http://localhost:{0}'.format("8081"))
+    time.sleep(5)
+
     # elem = driver.find_element_by_xpath("/html/body/div/div/form")
     elem = driver.find_element_by_class_name("form-signin")
     assert str(type(elem)) == "<class 'selenium.webdriver.remote.webelement.WebElement'>"
 
     # check if 2nd instance is running
     driver.get('http://localhost:{0}/login'.format("8082"))
+    time.sleep(5)
     # elem = driver.find_element_by_xpath("/html/body/div/div/form")
     elem = driver.find_element_by_class_name("form-signin")
     assert str(type(elem)) == "<class 'selenium.webdriver.remote.webelement.WebElement'>"
