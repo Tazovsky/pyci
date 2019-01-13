@@ -39,7 +39,7 @@ def test_insert_json_in_yaml(shared_datadir):
     # users validation
     assert [k for k in res.keys()] == ['master', 'user@somemail.com']
 
-    # check if alle needed fields are under users
+    # check if all needed fields are under users
     assert [k for k in res['master'].keys()] == ['json', 'yaml']
     assert [k for k in res['user@somemail.com'].keys()] == ['json', 'yaml']
 
@@ -47,7 +47,7 @@ def test_insert_json_in_yaml(shared_datadir):
     assert res["user@somemail.com"]["json"][0]["port-range-max"] == 20200
 
     # load reference config
-    with(open(path(ref_dir, "config.json"), "r")) as f:
+    with(open(shared_datadir / "refdata/config.json"), "r") as f:
         ref_res = json.loads(f.read())
 
     assert res == ref_res
