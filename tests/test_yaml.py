@@ -1,6 +1,6 @@
 import filecmp
 from tempfile import mkstemp
-from pyci.yaml import make_custom_yaml, insert_json_in_yaml
+from pyci.yaml import *
 import json
 from os.path import join as path
 
@@ -52,9 +52,12 @@ def test_insert_json_in_yaml(shared_datadir):
 
     assert res == ref_res
 
-    # check if app is run:
-    from selenium import webdriver
+def test_filter_json_by_user(shared_datadir):
+    json_path = shared_datadir / "testdata/config.json"
+    json_dict = json.load(open(json_path, "r"))
 
+    assert filter_json_by_user("master", json_path)["ci"][0]["user"] == json_dict["ci"][0]["user"]
+    assert filter_json_by_user("user@somemail.com", json_path)["ci"][0]["user"] == json_dict["ci"][1]["user"]
 
 if False:
     with(open(path(ref_dir, "config.json"), "w")) as f:
