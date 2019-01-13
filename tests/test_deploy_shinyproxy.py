@@ -37,8 +37,16 @@ def test_deploy_shinyproxy(shared_datadir):
     assert isinstance(output["user1"]["process"].pid, int)
     assert isinstance(output["user2"]["process"].pid, int)
 
-    atexit.register(output["user1"]["process"].kill)
-    atexit.register(output["user2"]["process"].kill)
+
+    def kill_processes():
+
+
+        for nm in [k for k in output.keys()]:
+            print("Killing process ID: {0}...".format(output[nm]["process"].pid))
+            output[nm]["process"].kill()
+
+
+    atexit.register(kill_processes)
 
     # run selenium server
     options = webdriver.ChromeOptions()
