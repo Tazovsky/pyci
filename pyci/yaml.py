@@ -80,7 +80,7 @@ def filter_json_by_user(user: str, json_path: str):
     filtered_json=dict(ci=[dict()])
     for i in range(len(json_dict["ci"])):
         if json_dict["ci"][i]["user"] == user:
-            filtered_json["ci"][0] = json_dict["ci"][i]
+            filtered_json["ci"] = [json_dict["ci"][i]]
             return filtered_json
 
     if filtered_json["ci"][0] == {}:
