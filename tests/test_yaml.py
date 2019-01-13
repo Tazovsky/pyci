@@ -47,10 +47,14 @@ def test_insert_json_in_yaml(shared_datadir):
     assert res["user@somemail.com"]["json"][0]["port-range-max"] == 20200
 
     # load reference config
-    with(open(shared_datadir / "refdata/config.json"), "r") as f:
+    with(open(shared_datadir / "refdata/config.json", "r")) as f:
         ref_res = json.loads(f.read())
 
     assert res == ref_res
+
+    # check if app is run:
+    from selenium import webdriver
+
 
 if False:
     with(open(path(ref_dir, "config.json"), "w")) as f:
