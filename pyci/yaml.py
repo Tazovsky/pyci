@@ -72,3 +72,16 @@ def insert_json_in_yaml(json_path: str, yaml_path: str) -> dict:
             user_per_config[user]["yaml"] = f.read()
 
     return dict(user_per_config)
+
+json_path = '/Users/foltynsk/Projects/pyci/tests/data/testdata/config.json'
+
+def filter_json_by_user(user: str, json_path: str):
+    json_dict = json.load(open(json_path, "r"))
+    filtered_json=dict(ci=[dict()])
+    for i in range(len(json_dict["ci"])):
+        if json_dict["ci"][i]["user"] == user:
+            filtered_json["ci"] = [json_dict["ci"][i]]
+            return filtered_json
+
+    if filtered_json["ci"][0] == {}:
+        raise Exception("User {0} not found".format(user))
