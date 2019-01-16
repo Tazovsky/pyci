@@ -3,6 +3,9 @@ from shutil import move, copy
 from os import fdopen, remove, path
 import re
 import json
+import yaml
+import subprocess
+from subprocess import Popen, PIPE, DEVNULL
 
 # TODO: change print to INFO logger message
 
@@ -72,3 +75,32 @@ def insert_json_in_yaml(json_path: str, yaml_path: str) -> dict:
             user_per_config[user]["yaml"] = f.read()
 
     return dict(user_per_config)
+
+def run_docker_cmd_from_yaml(yaml_path: str, id: str = "spendworx") -> int:
+    with open(yaml_path, 'rt') as f:
+        yaml_dict = yaml.safe_load(f.read())
+    specs = yaml_dict['proxy']['specs']
+    app_specs = None
+    for i in range(len(specs)):
+        if specs[i]['id'] == id:
+            app_specs = specs[i]
+
+    if app_specs is None:
+        raise Exception("Element with ID = '{0}' hasn't been found in '{1}'".format(id, yaml_path))
+
+    cmd = " ".join(app_specs['container-cmd'])
+    vol = " ".join(["-v " + s for s in app_specs['container-volumes']])
+    img = app_specs['container-image']
+    docker_cmd = "docker run {0} -i {1} bash -c \"{2}\"".format(vol, img, cmd)
+
+    import os
+
+    try:
+        os.system(docker_cmd)
+    except:
+        print("error")
+
+    exit_code = os.system(docker_cmd)
+    if exit_code:
+        raise Exception("Failed to run docker container")
+    return exit_code
