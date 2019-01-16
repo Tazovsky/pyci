@@ -36,6 +36,7 @@ def get_jar(url: str = "https://www.shinyproxy.io/downloads/shinyproxy-2.0.5.jar
     # see: https://stackoverflow.com/a/28052583/5002478
     context = ssl._create_unverified_context()
 
+    print("Downloading file " + url)
     with request.urlopen(url, context = context) as response, open(target_file, 'wb') as target_file:
         shutil.copyfileobj(response, target_file)
 
@@ -77,7 +78,7 @@ def deploy(json_path: str,
     # check if deployment location exists
     if os.path.isdir(deployment_dir) is False:
         os.makedirs(deployment_dir)
-        warnings.warn("Created directory: " + deployment_dir)
+        print("Created directory: " + deployment_dir)
 
     res = insert_json_in_yaml(json_path, yaml_path)
 

@@ -77,6 +77,17 @@ def insert_json_in_yaml(json_path: str, yaml_path: str) -> dict:
 
     return dict(user_per_config)
 
+def filter_json_by_user(user: str, json_path: str):
+    json_dict = json.load(open(json_path, "r"))
+    filtered_json=dict(ci=[dict()])
+    for i in range(len(json_dict["ci"])):
+        if json_dict["ci"][i]["user"] == user:
+            filtered_json["ci"] = [json_dict["ci"][i]]
+            return filtered_json
+
+    if filtered_json["ci"][0] == {}:
+        raise Exception("User {0} not found".format(user))
+
 def run_docker_cmd_from_yaml(yaml_path: str, id: str = "spendworx", timeout_sec: int = 10) -> object:
     with open(yaml_path, 'rt') as f:
         yaml_dict = yaml.safe_load(f.read())
@@ -106,3 +117,5 @@ def run_docker_cmd_from_yaml(yaml_path: str, id: str = "spendworx", timeout_sec:
         raise Exception("Error: " + str(stderr))
 
     return proc
+
+
