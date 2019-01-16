@@ -104,7 +104,7 @@ def run_docker_cmd_from_yaml(yaml_path: str, id: str = "spendworx", timeout_sec:
     vol = " ".join(["-v " + s for s in app_specs['container-volumes']])
     img = app_specs['container-image']
     docker_cmd = "docker run {0} -i {1} bash -c \"{2}\"".format(vol, img, cmd)
-
+    print("Running command: " + docker_cmd)
     proc = Popen(docker_cmd.split(), stdout=PIPE, stderr=PIPE)
     timer = Timer(timeout_sec, proc.kill)
     try:
