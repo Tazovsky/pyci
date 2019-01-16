@@ -6,6 +6,7 @@ import json
 import yaml
 import subprocess
 from subprocess import Popen, PIPE, DEVNULL
+from threading import Timer
 
 # TODO: change print to INFO logger message
 
@@ -76,7 +77,7 @@ def insert_json_in_yaml(json_path: str, yaml_path: str) -> dict:
 
     return dict(user_per_config)
 
-def run_docker_cmd_from_yaml(yaml_path: str, id: str = "spendworx") -> int:
+def run_docker_cmd_from_yaml(yaml_path: str, id: str = "spendworx", timeout_sec: int = 10) -> object:
     with open(yaml_path, 'rt') as f:
         yaml_dict = yaml.safe_load(f.read())
     specs = yaml_dict['proxy']['specs']
@@ -93,14 +94,15 @@ def run_docker_cmd_from_yaml(yaml_path: str, id: str = "spendworx") -> int:
     img = app_specs['container-image']
     docker_cmd = "docker run {0} -i {1} bash -c \"{2}\"".format(vol, img, cmd)
 
-    import os
-
+    proc = Popen(docker_cmd.split(), stdout=PIPE, stderr=PIPE)
+    timer = Timer(timeout_sec, proc.kill)
     try:
-        os.system(docker_cmd)
-    except:
-        print("error")
+        timer.start()
+        stdout, stderr = proc.communicate()
+    finally:
+        timer.cancel()
 
-    exit_code = os.system(docker_cmd)
-    if exit_code:
-        raise Exception("Failed to run docker container")
-    return exit_code
+    if stderr:
+        raise Exception("Error: " + str(stderr))
+
+    return proc
