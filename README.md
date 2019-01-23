@@ -1,6 +1,7 @@
 # pyci
 
-`pyci` is `python` wrapper to easily deploy multiple instance ShinyProxy apps.
+`pyci` is `python` wrapper to easily deploy multiple instances ShinyProxy apps
+depending on config declared in `json` file.
 
 
 ## usage
