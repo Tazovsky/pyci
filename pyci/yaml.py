@@ -135,8 +135,6 @@ def run_docker_cmd_from_yaml(yaml_path: str,
 
     # cleanup at exit and before running container
     stop_and_remove_container(cont_name)
-    atexit.register(stop_and_remove_container, cont_name)
-
 
     print("Running command: " + " ".join(docker_cmd))
 
@@ -150,6 +148,8 @@ def run_docker_cmd_from_yaml(yaml_path: str,
         stdout, stderr = proc.communicate()
     finally:
         timer.cancel()
+        # cleanup after running container
+        stop_and_remove_container(cont_name)
 
     # because timer.cancel does SIGTERM which has -9 exit code
     if proc.returncode != -9 and stderr:
