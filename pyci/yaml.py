@@ -3,6 +3,11 @@ from shutil import move, copy
 from os import fdopen, remove, path
 import re
 import json
+import yaml
+import subprocess
+from subprocess import Popen, PIPE, DEVNULL
+from threading import Timer
+import atexit
 
 # TODO: change print to INFO logger message
 
@@ -73,8 +78,6 @@ def insert_json_in_yaml(json_path: str, yaml_path: str) -> dict:
 
     return dict(user_per_config)
 
-json_path = '/Users/foltynsk/Projects/pyci/tests/data/testdata/config.json'
-
 def filter_json_by_user(user: str, json_path: str):
     json_dict = json.load(open(json_path, "r"))
     filtered_json=dict(ci=[dict()])
@@ -85,3 +88,97 @@ def filter_json_by_user(user: str, json_path: str):
 
     if filtered_json["ci"][0] == {}:
         raise Exception("User {0} not found".format(user))
+
+if False:
+    yaml_path = "tests/data/testdata/shinyproxy_example/application.yml"
+    id = "06_tabsets"
+    timeout_sec: int = 10
+    docker_command = "R -e 'shinyproxy::run_06_tabsets()'"
+
+
+def run_docker_cmd_from_yaml(yaml_path: str,
+                             id: str = "myapp",
+                             docker_command: str = None,
+                             timeout_sec: int = 10,
+                             cont_name: str = "pycitest") -> object:
+
+    with open(yaml_path, 'rt') as f:
+        yaml_dict = yaml.safe_load(f.read())
+    specs = yaml_dict['proxy']['specs']
+    app_specs = None
+    for i in range(len(specs)):
+        if specs[i]['id'] == id:
+            app_specs = specs[i]
+            break
+
+    if app_specs is None:
+        raise Exception("Element with ID = '{0}' hasn't been found in '{1}'".format(id, yaml_path))
+
+    # ---------------------- create docker command
+    img = app_specs["container-image"]
+
+    if docker_command is None and 'container-cmd' in app_specs.keys():
+        cmd = app_specs['container-cmd']
+    else:
+        cmd = docker_command
+
+    if isinstance(cmd, list) is False:
+        raise Exception("Command '{0} is not  list".format(str(cmd)))
+
+    if "container-volumes" in app_specs.keys():
+        vol = " ".join(["-v " + s for s in app_specs['container-volumes']]).split()
+
+    else:
+        vol = ""
+
+    docker_cmd = [k for k in ['docker', 'run', '--rm', '--name', cont_name, '-i', vol, img] if k != '']
+    docker_cmd = make_list_flat(docker_cmd)
+    docker_cmd.extend(cmd)
+
+    # cleanup at exit and before running container
+    stop_and_remove_container(cont_name)
+
+    print("\n>>> Running command:\n    {0}\n".format(str(" ".join(docker_cmd))))
+    print("\n>>> Running command (shell form):\n    {0}\n".format(str(docker_cmd)))
+
+    # --------------------- run container
+
+    proc = Popen(docker_cmd, stdout=PIPE, stderr=PIPE, shell=False)
+
+    timer = Timer(timeout_sec, proc.kill)
+    try:
+        timer.start()
+        stdout, stderr = proc.communicate()
+    finally:
+        timer.cancel()
+        # cleanup after running container
+        stop_and_remove_container(cont_name)
+
+    # because timer.cancel does SIGTERM which has -9 exit code
+    if proc.returncode != -9 and stderr:
+        proc.kill()
+        raise Exception("Error: " + str(stderr))
+    else:
+        print("Successfully run Shiny app")
+
+    return proc
+
+def stop_and_remove_container(cont_name) -> None:
+    try:
+        proc = Popen(['docker', 'stop', cont_name], stdout=PIPE, stderr=PIPE, shell=False)
+        stdout, stderr = proc.communicate()
+    finally:
+        if stderr:
+            print("No container to stop")
+
+    try:
+        proc = Popen(['docker', 'rm', '-f', cont_name], stdout=PIPE, stderr=PIPE, shell=False)
+        stdout, stderr = proc.communicate()
+    finally:
+        if stderr:
+            print("No container to remove")
+
+def make_list_flat(l):
+    flist = []
+    flist.extend([l]) if (type(l) is not list) else [flist.extend(make_list_flat(e)) for e in l]
+    return flist
