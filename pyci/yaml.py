@@ -136,7 +136,7 @@ def run_docker_cmd_from_yaml(yaml_path: str,
     # cleanup at exit and before running container
     stop_and_remove_container(cont_name)
 
-    print("Running command: " + " ".join(docker_cmd))
+    print("\n>>> Running command: {0}\n".format(str(" ".join(docker_cmd))))
 
     # --------------------- run container
 
