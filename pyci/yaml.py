@@ -126,18 +126,21 @@ def run_docker_cmd_from_yaml(yaml_path: str,
         raise Exception("Command '{0} is not  list".format(str(cmd)))
 
     if "container-volumes" in app_specs.keys():
-        vol = " ".join(["-v " + s for s in app_specs['container-volumes']])
+        vol = " ".join(["-v " + s for s in app_specs['container-volumes']]).split()
+
     else:
         vol = ""
 
     docker_cmd = [k for k in ['docker', 'run', '--rm', '--name', cont_name, '-i', vol, img] if k != '']
+    docker_cmd = make_list_flat(docker_cmd)
     docker_cmd.extend(cmd)
 
     # cleanup at exit and before running container
     stop_and_remove_container(cont_name)
 
-    print("\n>>> Running command: {0}\n".format(str(" ".join(docker_cmd))))
-
+    print("\n>>> Running command:\n    {0}\n".format(str(" ".join(docker_cmd))))
+    print("\n>>> Running command (shell form):\n    {0}\n".format(str(docker_cmd)))
+    
     # --------------------- run container
 
     proc = Popen(docker_cmd, stdout=PIPE, stderr=PIPE, shell=False)
@@ -174,3 +177,8 @@ def stop_and_remove_container(cont_name) -> None:
     finally:
         if stderr:
             print("No container to remove")
+
+def make_list_flat(l):
+    flist = []
+    flist.extend([l]) if (type(l) is not list) else [flist.extend(make_list_flat(e)) for e in l]
+    return flist
