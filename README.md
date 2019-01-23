@@ -49,7 +49,7 @@ from tempfile import mkstemp
 from pyci.yaml import *
 from pyci.shinyproxy import *
 
-new_json = filter_json_by_user("${USER_ID}", "ci/deployment_config.json")
+new_json = filter_json_by_user("user@somemail.com", "ci/deployment_config.json")
 
 new_json_path = mkstemp()[1]
 
