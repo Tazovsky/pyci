@@ -20,7 +20,7 @@ In `json` can be declared any field from `application.yml` supported by
               "port-range-start": 20000,
               "port-range-max": 20100,
               "container-volumes": "['/home/project/data:/data', '/home/project/data/config:/data/config']",
-              "container-cmd": "['R', '-e shiny::runApp(\",/data/spendworx/inst/shiny\")']"
+              "container-cmd": "['R', '-e shiny::runApp(\",/data/myapp/inst/shiny\")']"
             }]
 
          },
@@ -32,7 +32,7 @@ In `json` can be declared any field from `application.yml` supported by
               "port-range-start": 20101,
               "port-range-max": 20200,
               "container-volumes": "['/home/project/data:/data', '/home/project/data/config:/data/config']",
-              "container-cmd": "['R', '-e shiny::runApp(\"/data/spendworx/inst/shiny\")']"
+              "container-cmd": "['R', '-e shiny::runApp(\"/data/myapp/inst/shiny\")']"
             }]
 
          }

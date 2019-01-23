@@ -15,9 +15,9 @@ proxy:
     port-range-start: 20000
     port-range-max: 20050
   specs:
-  - id: spendworx
+  - id: myapp
     container-cmd: ["R", "-e print(1)"]
-    container-image: spendworx
+    container-image: myapp
     access-groups: [admin, anx]
 
 logging:

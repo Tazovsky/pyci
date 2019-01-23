@@ -97,7 +97,7 @@ if False:
 
 
 def run_docker_cmd_from_yaml(yaml_path: str,
-                             id: str = "spendworx",
+                             id: str = "myapp",
                              docker_command: str = None,
                              timeout_sec: int = 10,
                              cont_name: str = "pycitest") -> object:
@@ -140,7 +140,7 @@ def run_docker_cmd_from_yaml(yaml_path: str,
 
     print("\n>>> Running command:\n    {0}\n".format(str(" ".join(docker_cmd))))
     print("\n>>> Running command (shell form):\n    {0}\n".format(str(docker_cmd)))
-    
+
     # --------------------- run container
 
     proc = Popen(docker_cmd, stdout=PIPE, stderr=PIPE, shell=False)
