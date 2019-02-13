@@ -97,13 +97,18 @@ if False:
 
 
 def run_docker_cmd_from_yaml(yaml_path: str,
+                             json_path: str = None,
                              id: str = "myapp",
                              docker_command: str = None,
                              timeout_sec: int = 10,
                              cont_name: str = "pycitest") -> object:
 
-    with open(yaml_path, 'rt') as f:
-        yaml_dict = yaml.safe_load(f.read())
+    if json_path is not None:
+        yaml_dict = insert_json_in_yaml(json_path, yaml_path)
+    else:
+        with open(yaml_path, 'rt') as f:
+            yaml_dict = yaml.safe_load(f.read())
+
     specs = yaml_dict['proxy']['specs']
     app_specs = None
     for i in range(len(specs)):
