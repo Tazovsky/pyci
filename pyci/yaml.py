@@ -149,12 +149,12 @@ def run_docker_cmd_from_yaml(yaml_path: str,
 
     if "container-volumes" in app_specs.keys():
         vol = " ".join(["-v " + s for s in app_specs['container-volumes']]).split()
-
     else:
         vol = ""
 
     docker_cmd = [k for k in ['docker', 'run', '--rm', '--name', cont_name, '-i', vol, img] if k != '']
     docker_cmd = make_list_flat(docker_cmd)
+    # add exec command
     docker_cmd.extend(cmd)
 
     # cleanup at exit and before running container
