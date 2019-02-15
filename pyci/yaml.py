@@ -94,17 +94,34 @@ if False:
     id = "06_tabsets"
     timeout_sec: int = 10
     docker_command = "R -e 'shinyproxy::run_06_tabsets()'"
+    ######
+    yaml_path = "dev/application.yml"
+    json_path = "dev/deployment_config_new.json"
+    id = "spendworx"
 
 
 def run_docker_cmd_from_yaml(yaml_path: str,
                              json_path: str = None,
+                             user: str = None,
                              id: str = "myapp",
                              docker_command: str = None,
                              timeout_sec: int = 10,
                              cont_name: str = "pycitest") -> object:
 
     if json_path is not None:
-        yaml_dict = insert_json_in_yaml(json_path, yaml_path)
+        if user is not str:
+            raise Exception("'user' must be a string when providing 'json_path'")
+        # insert_json_in_yaml returns dict with structure:
+        # yaml_dict[user_name]['json'] or yaml_dict[user_name]['yaml']
+        # second element is yaml saved as string so it needs to be converted to yaml file first and then read as dict
+        res = insert_json_in_yaml(json_path, yaml_path)
+        tmp_yaml_path = mkstemp()[1]
+        yaml_content = res[user]["yaml"]
+        with open(tmp_yaml_path, "w") as f:
+            f.write(yaml_content)
+        # read yaml
+        with open(tmp_yaml_path, 'rt') as f:
+            yaml_dict = yaml.safe_load(f.read())
     else:
         with open(yaml_path, 'rt') as f:
             yaml_dict = yaml.safe_load(f.read())
