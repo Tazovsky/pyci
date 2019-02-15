@@ -26,7 +26,7 @@ def make_custom_yaml(file_path: str, pattern: str, subst: str, output_path: str)
                     leading_spaces = spaces.group(0)
                     # combine new field
                     new_line = leading_spaces + pattern + ": " + subst
-                    print("Replacing line: {0}\nwith line: {1}".format(line, new_line))
+                    print("Replacing line: {0} with line: {1}\n".format(line, new_line))
                     new_file.write(new_line + "\n")
                 else:
                     new_file.write(line)
