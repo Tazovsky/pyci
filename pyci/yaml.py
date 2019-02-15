@@ -109,6 +109,7 @@ def run_docker_cmd_from_yaml(yaml_path: str,
                              cont_name: str = "pycitest") -> object:
 
     if json_path is not None:
+        print(">>>>>>>>>>> user: " + user)
         if user is not str:
             raise Exception("'user' must be a string when providing 'json_path'")
         # insert_json_in_yaml returns dict with structure:
