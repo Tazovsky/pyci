@@ -26,7 +26,7 @@ def make_custom_yaml(file_path: str, pattern: str, subst: str, output_path: str)
                     leading_spaces = spaces.group(0)
                     # combine new field
                     new_line = leading_spaces + pattern + ": " + subst
-                    print("Replacing line: {0}\nwith line: {1}".format(line, new_line))
+                    print("Replacing line: {0} with line: {1}\n".format(line, new_line))
                     new_file.write(new_line + "\n")
                 else:
                     new_file.write(line)
@@ -94,16 +94,38 @@ if False:
     id = "06_tabsets"
     timeout_sec: int = 10
     docker_command = "R -e 'shinyproxy::run_06_tabsets()'"
+    ######
+    yaml_path = "dev/application.yml"
+    json_path = "dev/deployment_config_new.json"
+    id = "spendworx"
 
 
 def run_docker_cmd_from_yaml(yaml_path: str,
+                             json_path: str = None,
+                             user: str = None,
                              id: str = "myapp",
                              docker_command: str = None,
                              timeout_sec: int = 10,
                              cont_name: str = "pycitest") -> object:
 
-    with open(yaml_path, 'rt') as f:
-        yaml_dict = yaml.safe_load(f.read())
+    if json_path is not None:
+        if user is None:
+            raise Exception("Argument 'user' must be also provided when providing 'json_path'")
+        # insert_json_in_yaml returns dict with structure:
+        # yaml_dict[user_name]['json'] or yaml_dict[user_name]['yaml']
+        # second element is yaml saved as string so it needs to be converted to yaml file first and then read as dict
+        res = insert_json_in_yaml(json_path, yaml_path)
+        tmp_yaml_path = mkstemp()[1]
+        yaml_content = res[user]["yaml"]
+        with open(tmp_yaml_path, "w") as f:
+            f.write(yaml_content)
+        # read yaml
+        with open(tmp_yaml_path, 'rt') as f:
+            yaml_dict = yaml.safe_load(f.read())
+    else:
+        with open(yaml_path, 'rt') as f:
+            yaml_dict = yaml.safe_load(f.read())
+
     specs = yaml_dict['proxy']['specs']
     app_specs = None
     for i in range(len(specs)):
@@ -127,12 +149,12 @@ def run_docker_cmd_from_yaml(yaml_path: str,
 
     if "container-volumes" in app_specs.keys():
         vol = " ".join(["-v " + s for s in app_specs['container-volumes']]).split()
-
     else:
         vol = ""
 
     docker_cmd = [k for k in ['docker', 'run', '--rm', '--name', cont_name, '-i', vol, img] if k != '']
     docker_cmd = make_list_flat(docker_cmd)
+    # add exec command
     docker_cmd.extend(cmd)
 
     # cleanup at exit and before running container
