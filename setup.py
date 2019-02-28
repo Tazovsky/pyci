@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='pyci',
-    version='0.3.3',
+    version='0.3.4',
     author='Kamil Foltyński <kamil@foltynski.com>',
     license='MIT',
     packages=['pyci'],
