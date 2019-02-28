@@ -92,7 +92,7 @@ def filter_json_by_user(user: str, json_path: str):
 if False:
     yaml_path = "tests/data/testdata/shinyproxy_example/application.yml"
     id = "06_tabsets"
-    timeout_sec: int = 10
+    timeout_sec = 10
     docker_command = "R -e 'shinyproxy::run_06_tabsets()'"
     ######
     yaml_path = "dev/application.yml"
