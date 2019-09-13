@@ -35,14 +35,6 @@ url = args.url
 app_id = args.app_id
 docker_image_fullname = args.image
 
-print(">>>>>>>>>>>>>>>>>")
-print(deployment_dir)
-print(deployment_config_path)
-print(user)
-print(url)
-print(app_id)
-print(docker_image_fullname)
-
 if os.path.exists(yaml_path) is False:
     raise Exception("{0} does not exist.".format(yaml_path))
 
