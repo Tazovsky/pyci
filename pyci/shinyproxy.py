@@ -76,7 +76,6 @@ def deploy(json_path: str,
         raise Exception("Path '{0} does not exist'".format(yaml_path))
 
     # check if deployment location exists
-    deployment_dir = os.path.expanduser(deployment_dir)
     if os.path.isdir(deployment_dir) is False:
         os.makedirs(deployment_dir)
         print("Created directory: " + deployment_dir)

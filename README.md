@@ -70,7 +70,7 @@ make_custom_yaml(yaml_path, "container-image", docker_image_fullname, yaml_path)
 
 # before deploying ShinProxy you can test if app successfully runs in container
 # id is the id of app in application.yaml
-run_docker_cmd_from_yaml(yaml_path, json_path = new_json_path user = "<git email or branch name, e.g. develop">, id = "01_hello")
+run_docker_cmd_from_yaml(yaml_path, json_path = new_json_path, id = "01_hello")
 
 # deploy ShinyProxy
 output = deploy(json_path=new_json_path,
