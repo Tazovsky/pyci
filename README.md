@@ -85,7 +85,7 @@ output = deploy(json_path=new_json_path,
 
 ### `deploy.py`
 
-There is ready `deploy.py` script to easily parametrize your deployment. Example command:
+There is `deploy.py` script to easily parametrize your deployment. Example command:
 
 ```bash
 python3 deploy.py --image=<some docker imag> --work-dir=<working dir> --user=develop --config=deployment_config.json --app-id=your_app_id_in_application.yml
