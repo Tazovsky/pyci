@@ -6,6 +6,7 @@ import json
 from tempfile import mkstemp
 from pyci.yaml import *
 from pyci.shinyproxy import *
+import subprocess
 
 parser = argparse.ArgumentParser(description="Deployment script")
 
@@ -47,10 +48,14 @@ if os.path.exists(deployment_config_path) is False:
 # you can replace some application.yml's field on the fly, e.g.
 # it can be useful in CI when new docker image is build
 # and you want to deploy app 'ont the fly'
-os.system("docker pull " + docker_image_fullname)
+subprocess.Popen(['docker', 'pull', docker_image_fullname]).wait()
+
 make_custom_yaml(yaml_path, "container-image", docker_image_fullname, yaml_path)
 
 new_json = filter_json_by_user(user, deployment_config_path)
+
+# update deployment json with custom docker image
+new_json["ci"][0]["shinyproxy"][0]["container-image"] = docker_image_fullname
 
 new_json_path = mkstemp()[1]
 
